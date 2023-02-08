@@ -14,9 +14,7 @@ PREGAME_MENU_BAR = [['Menu', ['Start Game', ['Play as White', 'Play as Black'], 
 STATE_PREGAME = "Pre-Game - Ready!"
 
 # State 2: In-Game. GUI elements for during gameplay
-IN_GAME_MENU_BAR = [['&Menu', ['End Game']],
-                    ['Algorithm Information', ['Algorithm Info.']],
-                    ['Help && Info', ['Help && Info']]]
+IN_GAME_MENU_BAR = [['&Menu', ['End Game']]]
 
 STATE_PLAYER_MOVE = "In-Game - Your Move!"
 STATE_ENGINE_MOVE = "In-Game - Thinking..."

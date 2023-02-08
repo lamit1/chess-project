@@ -19,6 +19,86 @@ def evaluator(board, result):
             evaluation = -evaluation      # Reverse evaluation
         return evaluation
 
+    doubled_pawns = 0
+    white_pawns = set({})
+    white_pawn_files = [0 for i in range(8)]
+    black_pawns = set({})
+    black_pawn_files = [0 for i in range(8)]
+
+    for i in range(8):
+        b = 0
+        w = 0
+        for j in range(8):
+            if str(board.piece_at(8 * j + i)) == 'P':
+                white_pawn_files[i] = 1
+                w += 1
+                white_pawns.add(j * 8 + i)
+            elif str(board.piece_at(8 * j + i)) == 'p':
+                black_pawn_files[i] = 1
+                black_pawns.add(j * 8 + i)
+                b += 1
+        if w > 1:
+            doubled_pawns += w - 1
+        if b > 1:
+            doubled_pawns -= b - 1
+
+    w_safe = set({})
+    b_safe = set({})
+
+    null_added = False
+
+    if not board.turn:
+        null_added = True
+        board.push(chess.Move.null())
+
+    for move in board.pseudo_legal_moves:
+        if int(move.from_square) in white_pawns:
+            w_safe.add(int(move.from_square))
+
+    if null_added:
+        board.pop()
+        null_added = False
+    else:
+        board.push(chess.Move.null())
+        null_added = True
+
+    for move in board.pseudo_legal_moves:
+        if int(move.from_square) in black_pawns:
+            b_safe.add(int(move.from_square))
+    if null_added:
+        board.pop()
+
+    blocked_pawns = len(white_pawns) - len(w_safe) - (len(black_pawns) - len(b_safe))
+
+    isolated_pawns = 0
+
+    for pawn in white_pawns:
+        file = chess.square_file(pawn)
+        iso = 0
+        if file > 0:
+            if white_pawn_files[file - 1] != 0:
+                iso += 1
+
+        if file < 7:
+            if white_pawn_files[file + 1] != 0:
+                iso += 1
+        if iso == 0:
+            isolated_pawns += 1
+
+    for pawn in black_pawns:
+        file = chess.square_file(pawn)
+        iso = 0
+        if file > 0:
+            if black_pawn_files[file - 1] != 0:
+                iso += 1
+
+        if file < 7:
+            if black_pawn_files[file + 1] != 0:
+                iso += 1
+        if iso == 0:
+            isolated_pawns -= 1
+
+
     # Quantity of remaining pieces:
     wp = len(board.pieces(chess.PAWN, chess.WHITE))
     bp = len(board.pieces(chess.PAWN, chess.BLACK))
@@ -51,7 +131,29 @@ def evaluator(board, result):
     king_sq = sum([piece_tables.TABLE_KING_MAIN[i] for i in board.pieces(chess.KING, chess.WHITE)])
     king_sq += sum([-piece_tables.TABLE_KING_MAIN[chess.square_mirror(i)]
                     for i in board.pieces(chess.KING, chess.BLACK)])
+    score_mobility = board.legal_moves.count()
+    board.push(chess.Move.null())
+    score_mobility -= board.legal_moves.count()
+    board.pop()
 
-    evaluation = material + pawn_sq + knight_sq + bishop_sq + rook_sq + queen_sq + king_sq
+    if not board.turn:
+        score_mobility *= -1
 
+    castling_score = 0;
+    # Add castling evaluation
+    if board.has_kingside_castling_rights(chess.WHITE):
+        castling_score += 80
+    if board.has_queenside_castling_rights(chess.WHITE):
+        castling_score += 80
+    if board.has_kingside_castling_rights(chess.BLACK):
+        castling_score -= 80
+    if board.has_queenside_castling_rights(chess.BLACK):
+        castling_score -= 80
+
+    material_score = material + pawn_sq + knight_sq + bishop_sq + rook_sq + queen_sq + king_sq
+    evaluation = castling_score +score_mobility + \
+            material_score + \
+            - 15 * (doubled_pawns + 0.5 * isolated_pawns + 0.5 * blocked_pawns)
+    print(castling_score)
+    # print(evaluation)
     return evaluation if board.turn else -evaluation

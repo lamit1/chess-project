@@ -131,7 +131,7 @@ class Controller:
         self.light_sq_colour = '#D7CAC1'       # Colour for light squares
         self.dark_sq_colour = '#769656'        # Colour for dark squares - Start as Green
         self.opening_book = opening_book       # Opening Book File
-        self.algorithm = 'MTD(f) - Main'
+        self.algorithm = 'MTD(f)'
 
     def set_labels(self, window):
         """
