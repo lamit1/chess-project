@@ -3,7 +3,7 @@ import os
 WINDOW_TITLE = 'Chess'
 LOGO = 'Images/logo.ico'
 
-ALGORITHM_LIST = ['MTD(f) - Main']
+ALGORITHM_LIST = ['MTD(f)']
 DEPTH_LIST = [2, 3, 4, 5]
 
 # State 1: Pre-Game. GUI elements outside of in-game.

@@ -30,11 +30,6 @@ def get_row(sq):
     """
     return 7 - chess.square_rank(sq)
 
-# def is_promotion(sq, board):
-#     if :
-#         return True
-#     else:
-#         return False
 
 def update_move_counters(counter_player, counter_engine, window, is_player):
     """
@@ -398,7 +393,7 @@ class Game:
                 timer_engine.elapsed += 100                                               # Elapse timer
                 is_exit_game = gui.check_for_end(window, button, value)           # Check for app or game exit
 
-                if self.algorithm != 'MTD(f) - Main':
+                if self.algorithm != 'MTD(f)':
                     engine_move = engine_search.search_controller()                      # Get move from engine
                 else:
                     engine_move = engine_search.search_controller(board)                 # Get move from MTF(f) engine

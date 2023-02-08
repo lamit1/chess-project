@@ -154,6 +154,6 @@ def evaluator(board, result):
     evaluation = castling_score +score_mobility + \
             material_score + \
             - 15 * (doubled_pawns + 0.5 * isolated_pawns + 0.5 * blocked_pawns)
-    print(castling_score)
+    # print(castling_score)
     # print(evaluation)
     return evaluation if board.turn else -evaluation
